@@ -1,0 +1,31 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+  background-color: #f9f9f9;
+}
+
+#history {
+  border: 1px solid #ccc;
+  padding: 10px;
+  height: 300px;
+  overflow-y: auto;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+
+#message {
+  width: 80%;
+  padding: 10px;
+}
+
+#sendBtn {
+  padding: 10px 20px;
+}
+
+.user-msg {
+  color: blue;
+}
+
+.bot-msg {
+  color: green;
+}
