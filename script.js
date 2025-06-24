@@ -47,9 +47,8 @@ sendBtn.addEventListener('click', async () => {
     });
 
     const result = await response.json();
-
     
-  if (!response?.reply) {
+  if (!result?.reply) {
     const errorMsg = result?.error?.message || 'Unknown error';
     throw new Error(errorMsg);
   }
