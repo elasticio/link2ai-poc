@@ -47,7 +47,13 @@ sendBtn.addEventListener('click', async () => {
     });
 
     const result = await response.json();
-    const reply = result.reply[0];
+
+    
+  if (!response?.reply) {
+    const errorMsg = result?.error?.message || 'Unknown error';
+    throw new Error(errorMsg);
+  }
+    const reply = result.reply[0] || 'No reply received';
 
     messageHistory.push({
     role: 'assistant',
@@ -56,7 +62,7 @@ sendBtn.addEventListener('click', async () => {
     ]
     });
 
-    addMessage(reply || 'No reply received', 'bot');
+    addMessage(reply, 'bot');
   } catch (err) {
     addMessage('Error: ' + err.message, 'bot');
   }
