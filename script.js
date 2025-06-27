@@ -11,7 +11,7 @@ function addMessage(content, sender, noteText = null) {
   const wrapper = document.createElement('div');
   // Optional note
   let noteDiv = null;
-  if (noteText !== undefined) {
+  if (noteText !== null) {
     noteDiv = document.createElement('div');
     noteDiv.className = 'text-muted small fst-italic mb-1';
     noteDiv.textContent = noteText || ''; // can be empty initially
@@ -28,7 +28,11 @@ function addMessage(content, sender, noteText = null) {
   historyDiv.appendChild(wrapper);
   historyDiv.scrollTop = historyDiv.scrollHeight;
 
-  return noteDiv;
+  return {
+    noteRef: noteDiv,
+    msgRef: msg,
+    wrapperRef: wrapper
+  };
 }
 
 sendBtn.addEventListener('click', async () => {
@@ -38,12 +42,14 @@ sendBtn.addEventListener('click', async () => {
   const validateInput = validateSwitch.checked;
   messageInput.value = '';
 
-  const noteRef = addMessage(text, 'user', validateInput ? '' : undefined);
+  const { noteRef } = addMessage(text, 'user', validateInput ? 'Validating...' : null);
 
   messageHistory.push({
     role: 'user',
     content: [{ type: 'text', text }]
   });
+
+   const { msgRef: thinkingMsg } = addMessage('💬 AI agent is thinking...', 'bot');
 
   try {
     const response = await fetch(API_URL, {
@@ -72,8 +78,10 @@ sendBtn.addEventListener('click', async () => {
       content: [{ type: 'text', text: reply }]
     });
 
-    addMessage(reply, 'bot');
+    //addMessage(reply, 'bot');
+    thinkingMsg.innerHTML = `<strong>AI agent:</strong> ${marked.parse(reply)}`;
   } catch (err) {
-    addMessage(err.message, 'bot');
+    //addMessage(err.message, 'bot');
+     thinkingMsg.innerHTML = `<strong>AI agent:</strong> ${err.message}`;
   }
 });
