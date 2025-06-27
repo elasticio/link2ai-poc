@@ -1,11 +1,14 @@
+.user-msg, .bot-msg {
+  margin-bottom: 10px;
+  font-size: larger;
+}
+
 .user-msg {
   color: #0d6efd;
-  margin-bottom: 10px;
 }
 
 .bot-msg {
   color: #198754;
-  margin-bottom: 10px;
 }
 
 #history .text-muted {

@@ -7,20 +7,28 @@ const messageHistory = [];
 
 const API_URL = "https://cors-proxy.psteam.vip/proxy?url=https://in-sparrow.elastic.io/hook/68303e13d0aa2300129b76f9";
 
-function addMessage(content, sender, note = null) {
-  if (note) {
-    const noteDiv = document.createElement('div');
+function addMessage(content, sender, noteText = null) {
+  const wrapper = document.createElement('div');
+  // Optional note
+  let noteDiv = null;
+  if (noteText !== undefined) {
+    noteDiv = document.createElement('div');
     noteDiv.className = 'text-muted small fst-italic mb-1';
-    noteDiv.textContent = note;
-    historyDiv.appendChild(noteDiv);
+    noteDiv.textContent = noteText || ''; // can be empty initially
+    wrapper.appendChild(noteDiv);
   }
+
   const msg = document.createElement('div');
   msg.className = sender === 'user' ? 'user-msg' : 'bot-msg';
   msg.innerHTML = (sender === 'bot')
     ? `<strong>AI agent:</strong> ${marked.parse(content)}`
     : `<strong>You:</strong> ${content}`;
-  historyDiv.appendChild(msg);
+
+  wrapper.appendChild(msg);
+  historyDiv.appendChild(wrapper);
   historyDiv.scrollTop = historyDiv.scrollHeight;
+
+  return noteDiv;
 }
 
 sendBtn.addEventListener('click', async () => {
@@ -28,13 +36,14 @@ sendBtn.addEventListener('click', async () => {
   if (!text) return;
 
   const validateInput = validateSwitch.checked;
+  messageInput.value = '';
+
+  const noteRef = addMessage(text, 'user', validateInput ? '' : undefined);
 
   messageHistory.push({
     role: 'user',
     content: [{ type: 'text', text }]
   });
-
-  messageInput.value = '';
 
   try {
     const response = await fetch(API_URL, {
@@ -44,11 +53,17 @@ sendBtn.addEventListener('click', async () => {
     });
 
     const result = await response.json();
-    if (!result?.reply) throw new Error(result?.error?.message || 'Unknown error');
 
-    const validationNote = validateInput ? 'Prompt is valid. Checked with Link2AI ✅' : null;
+    if (!result?.reply) {
+      if (noteRef && result?.error?.message === 'Malicious intent detected!') {
+        noteRef.textContent = 'Prompt rejected. Malicious input detected by Link2AI ❌';
+      }
+      throw new Error(result?.error?.message || 'Unknown error');
+    }
 
-    addMessage(text, 'user', validationNote);
+    if (noteRef) {
+      noteRef.textContent = 'Prompt is valid. Checked with Link2AI ✅';
+    }
 
     const reply = result.reply[0] || 'No reply received';
 
@@ -59,7 +74,6 @@ sendBtn.addEventListener('click', async () => {
 
     addMessage(reply, 'bot');
   } catch (err) {
-    const validationNote = validateInput && err.message === 'Malicious intent detected!' ? 'Prompt rejected. Malicious input detected by Link2AI ❌' : null;
-    addMessage('Error: ' + err.message, 'bot', validationNote);
+    addMessage('Error: ' + err.message, 'bot');
   }
 });
