@@ -85,3 +85,10 @@ sendBtn.addEventListener('click', async () => {
      thinkingMsg.innerHTML = `<strong>AI agent:</strong> ${err.message}`;
   }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+    new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});

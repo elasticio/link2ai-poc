@@ -14,3 +14,13 @@
 #history .text-muted {
   margin-bottom: 0.25rem;
 }
+
+.form-check-input.big-switch {
+  width: 3rem;
+  height: 1.5rem;
+  margin-right: 10px;
+}
+
+.form-check-input.big-switch:checked {
+  background-position: right center;
+}
