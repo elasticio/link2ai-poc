@@ -61,7 +61,7 @@ sendBtn.addEventListener('click', async () => {
       throw new Error(result?.error?.message || 'Unknown error');
     }
 
-    if (noteRef) {
+    if (noteRef && validateInput) {
       noteRef.textContent = 'Prompt is valid. Checked with Link2AI ✅';
     }
 
@@ -74,6 +74,6 @@ sendBtn.addEventListener('click', async () => {
 
     addMessage(reply, 'bot');
   } catch (err) {
-    addMessage('Error: ' + err.message, 'bot');
+    addMessage(err.message, 'bot');
   }
 });
