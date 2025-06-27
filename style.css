@@ -1,11 +1,13 @@
 .user-msg {
   color: #0d6efd;
   margin-bottom: 10px;
-  white-space: pre-wrap;
 }
 
 .bot-msg {
   color: #198754;
   margin-bottom: 10px;
-  white-space: pre-wrap;
+}
+
+#history .text-muted {
+  margin-bottom: 0.25rem;
 }

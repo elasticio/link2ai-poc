@@ -7,7 +7,13 @@ const messageHistory = [];
 
 const API_URL = "https://cors-proxy.psteam.vip/proxy?url=https://in-sparrow.elastic.io/hook/68303e13d0aa2300129b76f9";
 
-function addMessage(content, sender) {
+function addMessage(content, sender, note = null) {
+  if (note) {
+    const noteDiv = document.createElement('div');
+    noteDiv.className = 'text-muted small fst-italic mb-1';
+    noteDiv.textContent = note;
+    historyDiv.appendChild(noteDiv);
+  }
   const msg = document.createElement('div');
   msg.className = sender === 'user' ? 'user-msg' : 'bot-msg';
   msg.innerHTML = (sender === 'bot')
@@ -28,7 +34,6 @@ sendBtn.addEventListener('click', async () => {
     content: [{ type: 'text', text }]
   });
 
-  addMessage(text, 'user');
   messageInput.value = '';
 
   try {
@@ -41,6 +46,10 @@ sendBtn.addEventListener('click', async () => {
     const result = await response.json();
     if (!result?.reply) throw new Error(result?.error?.message || 'Unknown error');
 
+    const validationNote = validateInput ? 'Prompt is valid. Checked with Link2AI ✅' : null;
+
+    addMessage(text, 'user', validationNote);
+
     const reply = result.reply[0] || 'No reply received';
 
     messageHistory.push({
@@ -50,6 +59,7 @@ sendBtn.addEventListener('click', async () => {
 
     addMessage(reply, 'bot');
   } catch (err) {
-    addMessage('Error: ' + err.message, 'bot');
+    const validationNote = validateInput && err.message === 'Malicious intent detected!' ? 'Prompt rejected. Malicious input detected by Link2AI ❌' : null;
+    addMessage('Error: ' + err.message, 'bot', validationNote);
   }
 });
