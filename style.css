@@ -24,3 +24,7 @@
 .form-check-input.big-switch:checked {
   background-position: right center;
 }
+
+.navbar-brand {
+  font-size: 2.25rem;
+}
