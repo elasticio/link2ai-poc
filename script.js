@@ -75,6 +75,8 @@ sendBtn.addEventListener('click', async () => {
       alertBox.className= 'alert alert-success alert-message d-flex';
     }
 
+    if (!validateInput) alertBox.className= 'd-none ';
+
     const reply = result.reply[0] || 'No reply received';
 
     messageHistory.push({
