@@ -2,36 +2,40 @@ const historyDiv = document.getElementById('history');
 const messageInput = document.getElementById('message');
 const sendBtn = document.getElementById('sendBtn');
 const validateSwitch = document.getElementById('validateSwitch');
+const alertBox = document.getElementById('alertBox');
 
 const messageHistory = [];
 
 const API_URL = "https://cors-proxy.psteam.vip/proxy?url=https://in-sparrow.elastic.io/hook/68303e13d0aa2300129b76f9";
 
-function addMessage(content, sender, noteText = null) {
-  const wrapper = document.createElement('div');
-  // Optional note
-  let noteDiv = null;
-  if (noteText !== null) {
-    noteDiv = document.createElement('div');
-    noteDiv.className = 'text-muted small fst-italic mb-1';
-    noteDiv.textContent = noteText || ''; // can be empty initially
-    wrapper.appendChild(noteDiv);
+function addMessage(content, sender) {
+  let msg;
+  if (sender === 'bot') {
+  
+    const wrapper = document.createElement('div');
+    wrapper.className = 'bot-msg-wrapper';
+
+    const icon = document.createElement('div');
+    icon.className = 'bot-icon';
+    icon.innerHTML = '<svg fill="white" width="30px" height="35px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.928 11.607c-.202-.488-.635-.605-.928-.633V8c0-1.103-.897-2-2-2h-6V4.61c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5c-1.103 0-2 .897-2 2v2.997l-.082.006A1 1 0 0 0 1.99 12v2a1 1 0 0 0 1 1H3v5c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-5a1 1 0 0 0 1-1v-1.938a1.006 1.006 0 0 0-.072-.455zM5 20V8h14l.001 3.996L19 12v2l.001.005.001 5.995H5z"/><ellipse cx="8.5" cy="12" rx="1.5" ry="2"/><ellipse cx="15.5" cy="12" rx="1.5" ry="2"/><path d="M8 16h8v2H8z"/></svg>';
+
+    msg = document.createElement('div');
+    msg.className = 'bot-msg';
+    msg.textContent = content;
+
+    wrapper.appendChild(icon);
+    wrapper.appendChild(msg);
+    historyDiv.appendChild(wrapper);
+  } else {
+    msg = document.createElement('div');
+    msg.className = 'user-msg';
+    msg.textContent = content;
+    historyDiv.appendChild(msg);
   }
-
-  const msg = document.createElement('div');
-  msg.className = sender === 'user' ? 'user-msg' : 'bot-msg';
-  msg.innerHTML = (sender === 'bot')
-    ? `<strong>AI agent:</strong> ${marked.parse(content)}`
-    : `<strong>You:</strong> ${content}`;
-
-  wrapper.appendChild(msg);
-  historyDiv.appendChild(wrapper);
   historyDiv.scrollTop = historyDiv.scrollHeight;
 
-  return {
-    noteRef: noteDiv,
-    msgRef: msg,
-    wrapperRef: wrapper
+    return {
+    msgRef: msg
   };
 }
 
@@ -42,7 +46,7 @@ sendBtn.addEventListener('click', async () => {
   const validateInput = validateSwitch.checked;
   messageInput.value = '';
 
-  const { noteRef } = addMessage(text, 'user', validateInput ? 'Validating...' : null);
+  addMessage(text, 'user');
 
   messageHistory.push({
     role: 'user',
@@ -61,14 +65,14 @@ sendBtn.addEventListener('click', async () => {
     const result = await response.json();
 
     if (!result?.reply) {
-      if (noteRef && result?.error?.message === 'Malicious intent detected!') {
-        noteRef.textContent = 'Prompt rejected. Malicious input detected by Link2AI ❌';
+      if (result?.error?.message === 'Malicious intent detected!') {
+        alertBox.textContent = 'Prompt rejected. Malicious input detected by Link2AI ❌';
+        alertBox.className= 'alert alert-danger alert-message d-flex';
       }
       throw new Error(result?.error?.message || 'Unknown error');
-    }
-
-    if (noteRef && validateInput) {
-      noteRef.textContent = 'Prompt is valid. Checked with Link2AI ✅';
+    } else if (validateInput) {
+      alertBox.textContent = 'Prompt is valid. Checked with Link2AI ✅';
+      alertBox.className= 'alert alert-success alert-message d-flex';
     }
 
     const reply = result.reply[0] || 'No reply received';
@@ -78,17 +82,10 @@ sendBtn.addEventListener('click', async () => {
       content: [{ type: 'text', text: reply }]
     });
 
-    //addMessage(reply, 'bot');
-    thinkingMsg.innerHTML = `<strong>AI agent:</strong> ${marked.parse(reply)}`;
+    thinkingMsg.innerHTML = `${marked.parse(reply)}`;
   } catch (err) {
-    //addMessage(err.message, 'bot');
-     thinkingMsg.innerHTML = `<strong>AI agent:</strong> ${err.message}`;
+     thinkingMsg.innerHTML = `${err.message}`;
   }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-    new bootstrap.Tooltip(tooltipTriggerEl);
-  });
-});
+ addMessage("Hello! How can I help you today?", "bot");

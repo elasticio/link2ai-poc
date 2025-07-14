@@ -1,30 +1,139 @@
-.user-msg, .bot-msg {
-  margin-bottom: 10px;
-  font-size: larger;
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.chat-container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-panel {
+  width: 60%;
+  background-image: url('coffee.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chat-box {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 1rem;
+  margin: 2% 0% 2% 25%;
+  height: 90%;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#history {
+  flex: 1;
+  overflow-y: auto;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-msg {
-  color: #0d6efd;
+  background-color: #b5cfd8;
+  color: #365159;
+  align-self: flex-end;
+   margin-bottom: 15px;
 }
 
 .bot-msg {
-  color: #198754;
+  background-color: #f6ae44;
+  align-self: flex-start;
+  color: #6b2d05;
 }
 
-#history .text-muted {
-  margin-bottom: 0.25rem;
+.user-msg, .bot-msg {
+  overflow-wrap: break-word;
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 70%;
 }
 
-.form-check-input.big-switch {
-  width: 3rem;
-  height: 1.5rem;
+.input-area {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.right-panel {
+  width: 40%;
+  background-color: #e9f0f7;
+  padding: 2rem 2rem 0rem 2rem;
+  overflow-y: auto;
+}
+
+.alert-message {
+  margin-top: 1rem;
+}
+
+.logo-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo-bar h4 {
+  color: #622401;
+  font-size: 2.2rem;
+}
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  height: 6vh;
+  background-color: #622401;
+}
+
+.nav-bar h4 {
+  color: white;
+  font-size: 1.7rem;
+  margin-bottom: 0;
+}
+
+.naming {
+  width: 90%;
+  border-bottom: 3px solid #f6ae44;
+}
+
+.bot-msg-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.bot-icon {
+  background-color: #5a2600;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 10px;
+  flex-shrink: 0;
 }
 
-.form-check-input.big-switch:checked {
-  background-position: right center;
+.form-check-label {
+  font-size: larger;
+  font-weight: 600;
 }
 
-.navbar-brand {
-  font-size: 2.25rem;
+.form-switch .form-check-input {
+  width: 3rem;
+  height: 1.4rem;
+  margin-right: 1rem;
 }
