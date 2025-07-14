@@ -68,6 +68,10 @@ sendBtn.addEventListener('click', async () => {
       if (result?.error?.message === 'Malicious intent detected!') {
         alertBox.textContent = 'Prompt rejected. Malicious input detected by Link2AI ❌';
         alertBox.className= 'alert alert-danger alert-message d-flex';
+        messageHistory.push({
+          role: 'assistant',
+          content: [{ type: 'text', text: 'Malicious intent detected! ' }]
+        });
       }
       throw new Error(result?.error?.message || 'Unknown error');
     } else if (validateInput) {
