@@ -13,7 +13,7 @@ body {
 
 .left-panel {
   width: 60%;
-  background-image: url('coffee.png');
+  background-image: url('img/coffee.png');
   background-size: cover;
   background-position: center;
   display: flex;
