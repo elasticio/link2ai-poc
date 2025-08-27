@@ -63,25 +63,48 @@ sendBtn.addEventListener('click', async () => {
     });
 
     const result = await response.json();
+    let { reply, guardrails } = result;
 
-    if (!result?.reply) {
+    if (!reply) {
       if (result?.error?.message === 'Malicious intent detected!') {
         alertBox.textContent = 'Prompt rejected. Malicious input detected by Link2AI ❌';
         alertBox.className= 'alert alert-danger alert-message d-flex';
         messageHistory.push({
           role: 'assistant',
-          content: [{ type: 'text', text: 'Malicious intent detected! ' }]
+          content: [{ type: 'text', text: 'Malicious intent detected!' }]
         });
       }
       throw new Error(result?.error?.message || 'Unknown error');
-    } else if (validateInput) {
+    }
+    const brokenRules = (guardrails || []).filter(rule => rule.compliant === false);
+
+    if (brokenRules.length > 0) {
+      alertBox.textContent = 'Interaction stopped. Instruction violation detected by LINK2AI ❌';
+      alertBox.className = 'alert alert-danger alert-message d-flex';
+
+      // Log broken rules in console
+      console.group("❌ Guardrail violations detected");
+      brokenRules.forEach(rule => {
+        console.log("Rule:", rule.guardrail);
+        console.log("Argument:", rule.argument);
+        console.log("----");
+      });
+      console.groupEnd();
+
+      messageHistory.push({
+        role: 'assistant',
+        content: [{ type: 'text', text: 'Sorry, I’d rather not talk about that.' }]
+      });
+    }
+  
+    if (reply && validateInput && brokenRules.length === 0) {
       alertBox.textContent = 'Prompt is valid. Checked with Link2AI ✅';
       alertBox.className= 'alert alert-success alert-message d-flex';
     }
 
-    if (!validateInput) alertBox.className= 'd-none ';
+    if (!validateInput) alertBox.className= 'd-none';
 
-    const reply = result.reply[0] || 'No reply received';
+    reply = reply[0] || 'No reply received';
 
     messageHistory.push({
       role: 'assistant',
