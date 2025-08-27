@@ -91,10 +91,15 @@ sendBtn.addEventListener('click', async () => {
       });
       console.groupEnd();
 
+      const guardrailsResp = 'Sorry, I’d rather not talk about that.';
+
       messageHistory.push({
         role: 'assistant',
-        content: [{ type: 'text', text: 'Sorry, I’d rather not talk about that.' }]
+        content: [{ type: 'text', text: guardrailsResp }]
       });
+      reply = guardrailsResp;
+    } else {
+      reply = reply[0] || 'No reply received';
     }
   
     if (reply && validateInput && brokenRules.length === 0) {
@@ -103,8 +108,6 @@ sendBtn.addEventListener('click', async () => {
     }
 
     if (!validateInput) alertBox.className= 'd-none';
-
-    reply = reply[0] || 'No reply received';
 
     messageHistory.push({
       role: 'assistant',
