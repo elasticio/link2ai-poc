@@ -3,6 +3,7 @@ const messageInput = document.getElementById('message');
 const sendBtn = document.getElementById('sendBtn');
 const validateSwitch = document.getElementById('validateSwitch');
 const alertBox = document.getElementById('alertBox');
+const examplesList = document.querySelectorAll('#examplesList li');
 
 const messageHistory = [];
 
@@ -120,4 +121,18 @@ sendBtn.addEventListener('click', async () => {
   }
 });
 
- addMessage("Hello! How can I help you today?", "bot");
+examplesList.forEach(item => {
+  const tooltip = item.querySelector('.tooltip');
+  item.addEventListener('click', () => {
+    const text = item.getAttribute('data-text');
+    navigator.clipboard.writeText(text).then(() => {
+      tooltip.textContent = "Copied!";
+      setTimeout(() => {
+        tooltip.textContent = "Click to copy";
+      }, 2000); // reset after 2s
+    });
+  });
+});
+
+
+addMessage("Hello! How can I help you today?", "bot");
